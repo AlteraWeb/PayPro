@@ -15,7 +15,7 @@ cot_block($auth_write);
 
 $id = cot_import('id', 'G', 'INT');
 
-$discounts = explode(";", $cfg['plugin']['paypro']['discounts']);
+$discounts = explode(";", substr($cfg['plugin']['paypro']['discounts'], 0, -1));
 $discount = array();
 foreach ($discounts as $_dis){
     list($m, $_discount) = explode("|", $_dis);
@@ -49,12 +49,11 @@ if ($a == 'buy')
 $t = new XTemplate(cot_tplfile('paypro', 'plug'));
 
 cot_display_messages($t);
-
-for ($i = 1; $i <= 12; $i++) {
-    $minus = ($cfg['plugin']['paypro']['cost'] / 100) * $discount[$i];
+foreach ($discount as $i => $d) {
+    $minus = ($cfg['plugin']['paypro']['cost'] / 100) * $d;
     $t->assign('PRO_FORM_PERIOD_COST_'.$i, ($cfg['plugin']['paypro']['cost'] - $minus) * $i);
     $t->assign('PRO_FORM_PERIOD_OLD_COST_'.$i, ($cfg['plugin']['paypro']['cost']) * $i);
-    $t->assign('PRO_FORM_PERIOD_DISCOUNT_'.$i, $discount[$i]);
+    $t->assign('PRO_FORM_PERIOD_DISCOUNT_'.$i, $d);
 }
 
 $t->assign(array(
